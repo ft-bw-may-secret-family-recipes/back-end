@@ -7,17 +7,17 @@ const getById = (id) => db("users").where("user_id", id).first(); //matching use
 const getBy = (userProp) => db("users").where(userProp);
 
 const update = async (id, updatedUser) => {
-  const newUser = db("users")
+  const [newUser] = db("users")
     .where("user_id", id)
     .update(updatedUser)
     .returning("*");
-  return newUser[0];
+  return newUser;
 };
 //matching user token required
 
 const add = async (user) => {
-  const newUser = await db("users").insert(user).returning("*");
-  return newUser[0];
+  const [newUser] = await db("users").insert(user).returning("*");
+  return newUser;
 }; //via registration
 
 module.exports = {
