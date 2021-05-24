@@ -63,12 +63,10 @@ exports.up = async (knex) => {
       table.increments('category_id')
       table.string('category').notNullable()
     });
-
-
-
 }
 
 exports.down = async (knex) => {
+  await knex.schema.dropTableIfExists('category')
   await knex.schema.dropTableIfExists('step_ingredients')
   await knex.schema.dropTableIfExists('ingredients')
   await knex.schema.dropTableIfExists('steps')
