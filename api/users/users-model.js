@@ -6,12 +6,12 @@ const getById = (id) => db("users").where("user_id", id).first(); //matching use
 
 const getBy = (userProp) => db("users").where(userProp);
 
-const update = async (id, updateUser) => {
-  const updatedUser = db("users")
+const update = async (id, updatedUser) => {
+  const newUser = db("users")
     .where("user_id", id)
-    .update(updateUser)
+    .update(updatedUser)
     .returning("*");
-  return updatedUser[0];
+  return newUser[0];
 };
 //matching user token required
 
