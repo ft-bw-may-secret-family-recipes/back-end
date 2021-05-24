@@ -10,7 +10,7 @@ exports.up = async (knex) => {
 
     .createTable("recipes", (table) => {
       table.increments("recipe_id");
-      table.string("recipe_name", 128).notNullable().unique(); //should this be unique
+      table.string("recipe_name", 128).notNullable().unique();
       table
         .integer("user_id")
         .unsigned()
@@ -21,9 +21,9 @@ exports.up = async (knex) => {
         .onDelete("RESTRICT");
     })
 
-    .createTable("steps", (table) => {
-      table.increments("step_id");
-      table.text("steps_description").notNullable();
+    .createTable('steps', (table) => {
+      table.increments('step_id');
+      table.text('steps_description').notNullable();
       table
         .integer("recipe_id")
         .unsigned()
@@ -34,46 +34,38 @@ exports.up = async (knex) => {
         .onDelete("RESTRICT");
     })
 
-    .createTable("ingredients", (table) => {
-      table.increments("ingredient_id");
-      table.string("ingredient_name", 128).notNullable().unique();
-      table.string("ingredients_unit", 128).notNullable();
-      // table
-      //   .integer('step_id')
-      //   .unsigned()
-      //   .notNullable()
-      //   .references('step_id')
-      //   .inTable('steps')
-      //   .onUpdate('RESTRICT')
-      //   .onDelete('RESTRICT');
+    .createTable('ingredients', (table) => {
+      table.increments('ingredient_id');
+      table.string('ingredient_name', 128).notNullable().unique();
+      table.string('ingredients_unit', 128).notNullable()
     })
 
-    .createTable("step_ingredients", (table) => {
-      table.increments("step_ingredients_id");
-      table.float("quantity").notNullable();
-      table
-        .integer("step_id")
+    .createTable('step_ingredients', table => {
+      table.increments('step_ingredients_id')
+      table.float('quantity').notNullable()
+      table.integer('step_id')
         .unsigned()
         .notNullable()
-        .references("step_id")
-        .inTable("steps")
-        .onDelete("RESTRICT")
-        .onUpdate("CASCADE"); // YOU WON'T NEED IT!!!!
-      table
-        .integer("ingredient_id")
+        .references('step_id')
+        .inTable('steps')
+        .onDelete('RESTRICT')
+        .onUpdate('CASCADE')
+      table.integer('ingredient_id')
         .unsigned()
         .notNullable()
-        .references("ingredient_id")
-        .inTable("ingredients")
-        .onDelete("RESTRICT")
-        .onUpdate("RESTRICT"); // YOU WON'T NEED IT!!!!
+        .references('ingredient_id')
+        .inTable('ingredients')
+        .onDelete('RESTRICT')
+        .onUpdate('RESTRICT')
     });
-};
+
+
+}
 
 exports.down = async (knex) => {
-  await knex.schema.dropTableIfExists("step_ingredients");
-  await knex.schema.dropTableIfExists("ingredients");
-  await knex.schema.dropTableIfExists("steps");
-  await knex.schema.dropTableIfExists("recipes");
-  await knex.schema.dropTableIfExists("users");
-};
+  await knex.schema.dropTableIfExists('step_ingredients')
+  await knex.schema.dropTableIfExists('ingredients')
+  await knex.schema.dropTableIfExists('steps')
+  await knex.schema.dropTableIfExists('recipes')
+  await knex.schema.dropTableIfExists('users')
+}
