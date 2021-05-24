@@ -46,10 +46,32 @@ exports.up = async (knex) => {
       //   .inTable('steps')
       //   .onUpdate('RESTRICT')
       //   .onDelete('RESTRICT');
+    })
+
+    .createTable('step_ingredients', table => {
+      table.increments('step_ingredients_id')
+      table.float('quantity').notNullable()
+      table.integer('step_id')
+        .unsigned()
+        .notNullable()
+        .references('step_id')
+        .inTable('steps')
+        .onDelete('RESTRICT')
+        .onUpdate('CASCADE') // YOU WON'T NEED IT!!!!
+      table.integer('ingredient_id')
+        .unsigned()
+        .notNullable()
+        .references('ingredient_id')
+        .inTable('ingredients')
+        .onDelete('RESTRICT')
+        .onUpdate('RESTRICT') // YOU WON'T NEED IT!!!!
     });
+
+
 }
 
 exports.down = async (knex) => {
+  await knex.schema.dropTableIfExists('step_ingredients')
   await knex.schema.dropTableIfExists('ingredients')
   await knex.schema.dropTableIfExists('steps')
   await knex.schema.dropTableIfExists('recipes')
