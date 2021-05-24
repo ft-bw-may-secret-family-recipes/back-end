@@ -4,13 +4,14 @@ exports.up = async (knex) => {
       table.increments("user_id");
       table.string("user_username", 200).notNullable().unique();
       table.string("user_password", 200).notNullable();
-      table.string("user_email", 320).notNullable().unique();
+      table.string("user_email", 320).notNullable();
       table.timestamps(false, true);
     })
 
     .createTable("recipes", (table) => {
       table.increments("recipe_id");
       table.string("recipe_name", 128).notNullable().unique();
+      table.string('recipe_source',128).notNullable();
       table
         .integer("user_id")
         .unsigned()
@@ -23,7 +24,7 @@ exports.up = async (knex) => {
 
     .createTable('steps', (table) => {
       table.increments('step_id');
-      table.text('steps_description').notNullable();
+      table.string('steps_description').notNullable();
       table
         .integer("recipe_id")
         .unsigned()
@@ -57,12 +58,24 @@ exports.up = async (knex) => {
         .inTable('ingredients')
         .onDelete('RESTRICT')
         .onUpdate('RESTRICT')
+    })
+
+    .createTable('category', table => {
+      table.increments('category_id')
+      table.string('category').notNullable()
+      table
+        .integer("recipe_id")
+        .unsigned()
+        .notNullable()
+        .references("recipe_id")
+        .inTable("recipes")
+        .onUpdate("RESTRICT")
+        .onDelete("RESTRICT");
     });
-
-
 }
 
 exports.down = async (knex) => {
+  await knex.schema.dropTableIfExists('category')
   await knex.schema.dropTableIfExists('step_ingredients')
   await knex.schema.dropTableIfExists('ingredients')
   await knex.schema.dropTableIfExists('steps')
