@@ -60,16 +60,16 @@ exports.up = async (knex) => {
         .onUpdate('RESTRICT')
     })
 
-    .createTable('category', table => {
+    .createTable('categories', table => {
       table.increments('category_id')
       table.string('category').notNullable()
       table
-        .integer("recipe_id")
+        .integer("user_id")
         .unsigned()
         .notNullable()
-        .references("recipe_id")
-        .inTable("recipes")
-        .onUpdate("RESTRICT")
+        .references("user_id")
+        .inTable("users")
+        .onUpdate("CASCADE")
         .onDelete("RESTRICT");
     });
 }
