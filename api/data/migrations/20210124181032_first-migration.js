@@ -1,51 +1,43 @@
 exports.up = async (knex) => {
   await knex.schema
-    .createTable('users', (table) => {
-      table.increments('user_id')
-      table.string('user_username', 200).notNullable()
-      table.string('user_password', 200).notNullable()
-      table.string('user_email', 320).notNullable()
-      table.timestamps(false, true)
+    .createTable("users", (table) => {
+      table.increments("user_id");
+      table.string("user_username", 200).notNullable().unique();
+      table.string("user_password", 200).notNullable();
+      table.string("user_email", 320).notNullable().unique();
+      table.timestamps(false, true);
     })
 
-    .createTable('recipes', (table) => {
-      table.increments('recipe_id');
-      table.string('recipe_name', 128).notNullable().unique();//should this be unique
+    .createTable("recipes", (table) => {
+      table.increments("recipe_id");
+      table.string("recipe_name", 128).notNullable().unique();
       table
-        .integer('user_id')
+        .integer("user_id")
         .unsigned()
         .notNullable()
-        .references('user_id')
-        .inTable('users')
-        .onUpdate('RESTRICT')
-        .onDelete('RESTRICT');
+        .references("user_id")
+        .inTable("users")
+        .onUpdate("RESTRICT")
+        .onDelete("RESTRICT");
     })
 
     .createTable('steps', (table) => {
       table.increments('step_id');
       table.text('steps_description').notNullable();
       table
-        .integer('recipe_id')
+        .integer("recipe_id")
         .unsigned()
         .notNullable()
-        .references('recipe_id')
-        .inTable('recipes')
-        .onUpdate('RESTRICT')
-        .onDelete('RESTRICT');
+        .references("recipe_id")
+        .inTable("recipes")
+        .onUpdate("RESTRICT")
+        .onDelete("RESTRICT");
     })
 
     .createTable('ingredients', (table) => {
       table.increments('ingredient_id');
       table.string('ingredient_name', 128).notNullable().unique();
       table.string('ingredients_unit', 128).notNullable()
-      // table
-      //   .integer('step_id')
-      //   .unsigned()
-      //   .notNullable()
-      //   .references('step_id')
-      //   .inTable('steps')
-      //   .onUpdate('RESTRICT')
-      //   .onDelete('RESTRICT');
     })
 
     .createTable('step_ingredients', table => {
@@ -57,14 +49,14 @@ exports.up = async (knex) => {
         .references('step_id')
         .inTable('steps')
         .onDelete('RESTRICT')
-        .onUpdate('CASCADE') // YOU WON'T NEED IT!!!!
+        .onUpdate('CASCADE')
       table.integer('ingredient_id')
         .unsigned()
         .notNullable()
         .references('ingredient_id')
         .inTable('ingredients')
         .onDelete('RESTRICT')
-        .onUpdate('RESTRICT') // YOU WON'T NEED IT!!!!
+        .onUpdate('RESTRICT')
     });
 
 
