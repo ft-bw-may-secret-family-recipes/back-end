@@ -81,6 +81,7 @@ exports.up = async (knex) => {
         .onUpdate('RESTRICT')
     })
 
+
 }
 
 exports.down = async (knex) => {
