@@ -1,6 +1,5 @@
 const db = require("../data/db-config");
 const { getBy: getCategory } = require("./categories-model");
-const { getBy: getIngredient } = require("./ingredients-model");
 
 const getAll = () => db("recipes"); //admin only
 
@@ -29,12 +28,14 @@ const add = async (
   //remove duplicates
   rawIngredients = [...new Set(rawIngredients)];
 
+  //\\\\\\\\\\\\\\\\\\\ Start Transaction \\\\\\\\\\\\\\\\\\\\\
+
   await db.transaction(async (trx) => {
     let categoryObj = await getCategory(user_id, { category: category });
     if (!categoryObj) {
       [categoryObj] = await db("categories")
         .insert({ category: category, user_id: 1 })
-        .returning("*"); //! Does this destructure?
+        .returning("*");
     }
 
     rawRecipe = { ...rawRecipe, category_id: categoryObj.category_id };
