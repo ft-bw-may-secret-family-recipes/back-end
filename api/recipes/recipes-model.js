@@ -13,6 +13,7 @@ const getBy = async (user_id, recipeProp) => {
 
 const getByUserId = (id) => db("recipes").where("user_id", id);
 
+//\\\\\\\\\\\\\\\\\\\ add() \\\\\\\\\\\\\\\\\\\\\
 const add = async (
   user_id,
   { recipe_name, recipe_source, category, recipe_steps }
@@ -30,7 +31,7 @@ const add = async (
 
   //\\\\\\\\\\\\\\\\\\\ Start Transaction \\\\\\\\\\\\\\\\\\\\\
 
-  await db.transaction(async (trx) => {
+  const newRecipe = await db.transaction(async (trx) => {
     let categoryObj = await getCategory(user_id, { category: category });
     if (!categoryObj) {
       [categoryObj] = await db("categories")
@@ -40,7 +41,7 @@ const add = async (
 
     rawRecipe = { ...rawRecipe, category_id: categoryObj.category_id };
 
-    const [newRecipe] = await trx("recipes").insert(rawRecipe).returning("*");
+    let [newRecipe] = await trx("recipes").insert(rawRecipe).returning("*");
     const recipe_id = newRecipe.recipe_id;
 
     const ingredientObjs = await Promise.all(
@@ -61,8 +62,6 @@ const add = async (
         return igdtObj;
       })
     );
-
-    // execution not stopping
 
     const rawSteps = recipe_steps.map((step) => {
       return { step_description: step.step_description, recipe_id: recipe_id };
@@ -95,9 +94,60 @@ const add = async (
     const stepIngredients = await trx("step_ingredients")
       .insert(rawStepIngredients)
       .returning("*");
+
+    return {
+      categoryObj,
+      newRecipe,
+      newSteps,
+      ingredientObjs,
+      stepIngredients,
+    };
   });
 
-  return "gg";
+  //\\\\\\\\\\\\\\\\\\\ End Transaction \\\\\\\\\\\\\\\\\\\\\
+  const {
+    categoryObj,
+    newRecipe: recipe,
+    newSteps: steps,
+    ingredientObjs: ingredients,
+    stepIngredients,
+  } = newRecipe;
+
+  delete categoryObj.user_id;
+
+  const shapedRecipe = { ...recipe, category: categoryObj };
+  delete shapedRecipe.category_id;
+
+  const shapedStepIngredients = stepIngredients.map((stepIgdt) => {
+    const ingredient = ingredients.find(
+      (igdt) => igdt.ingredient_id === stepIgdt.ingredient_id
+    );
+
+    return { ...stepIgdt, ingredient: ingredient };
+  });
+
+  const shapedSteps = steps.map((step) => {
+    const stepIngredients = shapedStepIngredients.reduce(
+      (list, stepIgdt, idx, shapedStepIgdts) => {
+        if (stepIgdt.step_id === step.step_id) {
+          const [newIgdt] = shapedStepIgdts.splice(idx, 1);
+          delete newIgdt.step_id;
+          delete newIgdt.ingredient_id;
+
+          list.push(newIgdt);
+        }
+        return list;
+      },
+      []
+    );
+    delete step.recipe_id;
+
+    return { ...step, stepIngredients };
+  });
+
+  const fullRecipe = { ...shapedRecipe, shapedSteps };
+
+  return fullRecipe;
 };
 
 module.exports = {
