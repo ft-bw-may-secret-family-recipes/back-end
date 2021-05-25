@@ -1,8 +1,8 @@
 const db = require("../data/db-config");
 
 const getBy = async (stepIngredientProp) => {
-  let results = await db("step_ingredients").where(stepIngredientProp);
-  results.length === 1 ? results[0] : results;
+  let stepIngredients = await db("step_ingredients").where(stepIngredientProp);
+  stepIngredients.length === 1 ? stepIngredients[0] : stepIngredients;
 };
 
 const getByStepId = (step_id) =>
