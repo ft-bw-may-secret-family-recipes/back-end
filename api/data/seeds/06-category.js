@@ -1,7 +1,7 @@
 exports.seed = function(knex) {
-    return knex('category').insert([
-        {category: "pasta", recipe_id:1},
-        {category: "chicken", recipe_id:2},
-        {category: "fish", recipe_id:3},
+    return knex('categories').insert([
+        {category: "pasta", user_id:1},
+        {category: "chicken", user_id:2},
+        {category: "fish", user_id:3},
     ]);
   };
