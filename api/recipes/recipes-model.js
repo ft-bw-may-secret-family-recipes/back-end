@@ -1,5 +1,6 @@
 const db = require("../data/db-config");
 const { getBy: getCategory } = require("./categories-model");
+const { getBy: getIngredient } = require("./ingredients-model");
 
 const getAll = () => db("recipes"); //admin only
 
@@ -17,7 +18,16 @@ const add = async (
   user_id,
   { recipe_name, recipe_source, category_id, category, recipe_steps }
 ) => {
-  const rawRecipe = { user_id, recipe_name, recipe_source };
+  let rawRecipe = { user_id, recipe_name, recipe_source };
+  //pull all ingredients out,
+  let rawIngredients = recipe_steps.reduce((list, step) => {
+    const step_ingredients = step.step_ingredients.map(
+      (igdt) => igdt.ingredient
+    );
+    return [...list, ...step_ingredients];
+  }, []);
+  //remove duplicates
+  rawIngredients = [...new Set(rawIngredients)];
 
   await db.transaction(async (trx) => {
     const [newRecipe] = await trx("recipes").insert(rawRecipe).returning("*");
@@ -29,6 +39,24 @@ const add = async (
     } else {
       [categoryObj] = await db("categories").insert(category).returning("*"); //! Does this destructure?
     }
+
+    const ingredientObjs = rawIngredients.map(async (igdt) => {
+      let igdtObj = await getIngredient({
+        ingredient_name: igdt.ingredient_name,
+      });
+      if (!igdtObj) {
+        igdtObj = await trx("ingredients").insert(igdt);
+      }
+      return igdt;
+    });
+
+    const rawSteps = recipe_steps.map((step) => {
+      return { step_description: step.step_description, recipe_id: recipe_id };
+    });
+    const newSteps = await trx("steps").insert(rawSteps).returning("*");
+
+    // good: recipe, category, ingredients, steps
+    // next: ingredient steps
   });
 };
 
@@ -40,17 +68,19 @@ module.exports = {
 };
 
 const shape = {
-  recipe_name: "",
-  recipe_source: "",
-  category_id: 1,
-  //or
-  category: "",
+  recipe_name: "boiled water",
+  recipe_source: "me",
+  category: "soups",
   recipe_steps: [
     {
-      step_description: "",
+      step_description: "heat water in pot",
       step_ingredients: [
         {
-          quantity: 1,
+          quantity: 8,
+          ingredient: {
+            ingredient_name: "water",
+            ingredient_unit: "oz",
+          },
         },
       ],
     },
