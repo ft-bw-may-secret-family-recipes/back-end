@@ -1,15 +1,14 @@
 const db = require("../data/db-config");
 const { getBy: getCategory } = require("./categories-model");
+const { getByRecipeId: getSteps } = require("./steps-model");
 
 const getAll = () => db("recipes"); //admin only
 
-const getBy = async (user_id, recipeProp) => {
-  const results = await db("recipes").where({
+const getBy = (user_id, recipeProp) =>
+  db("recipes").where({
     user_id: user_id,
     ...recipeProp,
   });
-  results.length === 1 ? results[0] : results;
-};
 
 const getByUserId = (id) => db("recipes").where("user_id", id);
 
@@ -148,6 +147,16 @@ const add = async (
   const fullRecipe = { ...shapedRecipe, shapedSteps };
 
   return fullRecipe;
+};
+
+const getFull = async (user_id, recipe_id) => {
+  const recipe = await getBy(user_id, { recipe_id: recipe_id });
+
+  const category = await getCategory(user_id, {
+    category_id: recipe.category_id,
+  });
+
+  const steps = await getSteps(recipe_id);
 };
 
 module.exports = {
