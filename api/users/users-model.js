@@ -11,7 +11,10 @@ const getBy = (userProp) => db("users").where(userProp);
 // }
 
 const update = async (id, updatedUser) => {
-  const [newUser] = await db("users").where("user_id", id).update(updatedUser).returning("*");
+  const [newUser] = await db("users")
+  .where("user_id", id)
+  .update(updatedUser)
+  .returning("*");
   return newUser;
 };
 
