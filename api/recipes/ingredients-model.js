@@ -2,11 +2,8 @@ const db = require("../data/db-config");
 
 const getAll = () => db("ingredients");
 
-const getBy = async (user_id, categoryProp) => {
-  let results = await db("ingredients").where({
-    user_id: user_id,
-    ...categoryProp,
-  });
+const getBy = async (ingredientProp) => {
+  let results = await db("ingredients").where(ingredientProp);
   results.length === 1 ? results[0] : results;
 };
 
