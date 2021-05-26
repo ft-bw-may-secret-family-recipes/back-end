@@ -20,7 +20,7 @@ server.use("*", (_req, res) => {
 });
 
 // eslint-disable-next-line no-unused-vars
-server.use((err, _req, res, next) => {
+server.use((err, _req, res, _next) => {
   res.status(err.status || 500).json({
     message: err.message,
     stack: err.stack,
