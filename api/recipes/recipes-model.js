@@ -24,20 +24,47 @@ const getBy = (user_id, recipeProp) =>
       ...recipeProp,
     });
 
-const getByUserId = (id) =>
-  db
-    .select(
-      "recipe_id",
-      "recipe_name",
-      "recipe_source",
-      "user_id",
-      "category_id"
-    )
-    .from("recipes")
-    .where({
-      user_id: id,
-      active: true,
+const getByUserId = async (id) => {
+  const catRecipes = await db.transaction(async (trx) => {
+    const recipes = await trx
+      .select(
+        "recipe_id",
+        "recipe_name",
+        "recipe_source",
+        "user_id",
+        "category_id"
+      )
+      .from("recipes")
+      .where({
+        user_id: id,
+        active: true,
+      });
+
+    const categoryIds = recipes.map((recipe) => recipe.category_id);
+
+    const uniqueCategoryIds = [...new Set(categoryIds)];
+
+    const categories = await Promise.all(
+      uniqueCategoryIds.map(async (id) => {
+        const [category] = await trx("categories").where({ category_id: id });
+        return category;
+      })
+    );
+
+    const catRecipes = recipes.map((recipe) => {
+      const fullCategory = categories.find(
+        (cat) => cat.category_id === recipe.category_id
+      );
+      recipe.category = fullCategory;
+      delete recipe.category_id;
+      return recipe;
     });
+
+    return catRecipes;
+  });
+
+  return catRecipes;
+};
 
 //\\\\\\\\\\\\\\\\\\\ add() \\\\\\\\\\\\\\\\\\\\\
 const add = async (
