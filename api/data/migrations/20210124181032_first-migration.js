@@ -39,8 +39,8 @@ exports.up = async (knex) => {
         .notNullable()
         .references("category_id")
         .inTable("categories")
-        .onUpdate("CASCADE")
-        .onDelete("CASCADE");
+        .onUpdate("RESTRICT")
+        .onDelete("RESTRICT");
     })
 
     .createTable('steps', (table) => {

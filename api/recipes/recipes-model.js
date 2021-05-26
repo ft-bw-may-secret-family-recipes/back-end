@@ -201,10 +201,22 @@ const getFull = async (user_id, recipe_id) => {
   return { recipe, category, steps };
 };
 
+//\\\\\\\\\\\\\\\\\\\ remove() \\\\\\\\\\\\\\\\\\\\\
+
+const remove = (user_id, recipe_id) => {
+  return db("recipes")
+    .where({
+      user_id: user_id,
+      recipe_id: recipe_id,
+    })
+    .del();
+};
+
 module.exports = {
   getAll,
   getBy,
   getFull,
   getByUserId,
   add,
+  remove,
 };
