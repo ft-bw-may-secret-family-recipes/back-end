@@ -208,7 +208,7 @@ const remove = async (user_id, recipe_id) => {
       user_id: user_id,
       recipe_id: recipe_id,
     })
-    .update({ deactivated: true });
+    .update({ active: false });
 
   return `Recipe ${recipe_id} deleted`;
 };

@@ -21,14 +21,19 @@ router.get("/", checkUserIdExists, (req, res, next) => {
         .catch(next);
 });
 
-router.delete("/:recipe_id", (req, res, next) => {
-  const user_id = req.headers.user_id;
-  Recipes.remove(user_id, req.params.recipe_id)
-    .then((result) => {
-      res.status(200).json(result);
-    })
-    .catch(next);
-});
+router.delete(
+  "/:recipe_id",
+  checkUserIdExists,
+  CheckRecipeExists,
+  (req, res, next) => {
+    const user_id = req.headers.user_id;
+    Recipes.remove(user_id, req.params.recipe_id)
+      .then((result) => {
+        res.status(200).json(result);
+      })
+      .catch(next);
+  }
+);
 
 router.get(
   "/:recipe_id",
