@@ -1,5 +1,8 @@
 const router = require("express").Router();
+const checkAdmin = require("../middleware/check-admin");
 const Ingredients = require("./ingredients-model");
+
+router.use(checkAdmin);
 
 router.get("/", (req, res, next) => {
   Ingredients.getAll()
