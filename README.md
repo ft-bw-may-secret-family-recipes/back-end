@@ -160,7 +160,7 @@ Response:
 | ingredient_name  | string | (required)                            |
 | ingredient_unit  | string | (required if ingredient is new)       |
 
-Response: The created item
+Response: The created recipe
 
     {
         "recipe_id": 4,
