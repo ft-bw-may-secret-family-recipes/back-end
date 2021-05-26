@@ -6,7 +6,7 @@ exports.validateRecipe = async (req, res, next) => {
   }
   try {
     const validRecipe = await recipeSchema.validate(req.body, {
-      // stripUnknown: true,
+      stripUnknown: true,
     });
     req.body = validRecipe;
     next();
