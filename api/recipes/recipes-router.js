@@ -4,7 +4,6 @@ const Recipes = require("./recipes-model");
 
 router.use(checkAdmin);
 
-const Ingredients = require("../ingredients/ingredients-model");
 const Categories = require("./categories-model");
 //////////RECIPES//////////
 
