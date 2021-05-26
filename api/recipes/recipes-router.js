@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const { checkAdmin, checkUserIdExists } = require("../middleware");
+const { validateRecipe } = require("../middleware/validation");
 const Recipes = require("./recipes-model");
 
 router.use(checkAdmin);
@@ -59,7 +60,7 @@ router.get("/:recipe_id", checkUserIdExists, (req, res, next) => {
 //     .catch(next);
 // });
 
-router.post("/", checkUserIdExists, (req, res, next) => {
+router.post("/", checkUserIdExists, validateRecipe, (req, res, next) => {
   Recipes.add(req.headers.user_id, req.body)
     .then((recipe) => {
       res.status(201).json(recipe);
