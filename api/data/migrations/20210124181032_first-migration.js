@@ -10,7 +10,7 @@ exports.up = async (knex) => {
     
     .createTable('categories', table => {
       table.increments('category_id')
-      table.string('category').notNullable()
+      table.string('category').notNullable()//todo: max char constraint
       table
         .integer("user_id")
         .unsigned()
@@ -45,7 +45,7 @@ exports.up = async (knex) => {
 
     .createTable('steps', (table) => {
       table.increments('step_id');
-      table.string('step_description').notNullable();
+      table.string('step_description').notNullable();//todo: max char constraint
       table
         .integer("recipe_id")
         .unsigned()
