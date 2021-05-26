@@ -124,6 +124,7 @@ const add = async (
 
   const shapedRecipe = { ...recipe, category: categoryObj };
   delete shapedRecipe.category_id;
+  delete shapedRecipe.active;
 
   const shapedStepIngredients = stepIngredients.map((stepIgdt) => {
     const ingredient = ingredients.find(
