@@ -16,10 +16,19 @@ const getBy = (user_id, recipeProp) =>
   });
 
 const getByUserId = (id) =>
-  db("recipes").where({
-    user_id: id,
-    active: true,
-  });
+  db
+    .select(
+      "recipe_id",
+      "recipe_name",
+      "recipe_source",
+      "user_id",
+      "category_id"
+    )
+    .from("recipes")
+    .where({
+      user_id: id,
+      active: true,
+    });
 
 //\\\\\\\\\\\\\\\\\\\ add() \\\\\\\\\\\\\\\\\\\\\
 const add = async (
