@@ -199,27 +199,6 @@ const getFull = async (user_id, recipe_id) => {
   return { recipe, category, steps };
 };
 
-const shape = {
-  recipe_name: "boiled water",
-  recipe_source: "me",
-  category: "soups",
-  recipe_steps: [
-    {
-      step_description: "heat water in pot",
-      step_number: 1,
-      step_ingredients: [
-        {
-          quantity: 8,
-          ingredient: {
-            ingredient_name: "water",
-            ingredient_unit: "oz",
-          },
-        },
-      ],
-    },
-  ],
-};
-
 module.exports = {
   getAll,
   getBy,
