@@ -140,7 +140,7 @@ Response:
 
 ### Post a recipe
 
-    POST /api/items
+    POST /api/recipes
 
 ~~(auth)~~
 
