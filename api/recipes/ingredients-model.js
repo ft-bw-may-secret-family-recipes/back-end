@@ -4,7 +4,8 @@ const getAll = () => db("ingredients");
 
 const getBy = (ingredientProp) => db("ingredients").where(ingredientProp);
 
-const getByIngredientId = (id) => db("ingredients").where("ingredient_id", id);
+const getByIngredientId = (id) =>
+  db("ingredients").where("ingredient_id", id).first();
 
 module.exports = {
   getAll,
