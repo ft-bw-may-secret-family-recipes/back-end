@@ -65,7 +65,11 @@ const add = async (
     );
 
     const rawSteps = recipe_steps.map((step) => {
-      return { step_description: step.step_description, recipe_id: recipe_id };
+      return {
+        step_description: step.step_description,
+        step_number: step.step_number,
+        recipe_id: recipe_id,
+      };
     });
     const newSteps = await trx("steps").insert(rawSteps).returning("*");
 
@@ -180,7 +184,8 @@ const getFull = async (user_id, recipe_id) => {
         stepIngredients.map(async (stepIgdt) => {
           delete stepIgdt.step_id;
 
-          stepIgdt.ingredient = await getIngredient(stepIgdt.ingredient_id);
+          const [ingredient] = await getIngredient(stepIgdt.ingredient_id);
+          stepIgdt.ingredient = ingredient;
 
           delete stepIgdt.ingredient_id;
           return stepIgdt;
@@ -191,7 +196,7 @@ const getFull = async (user_id, recipe_id) => {
     })
   );
 
-  return { recipe, category, steps, stepIngredients };
+  return { recipe, category, steps };
 };
 
 const shape = {
