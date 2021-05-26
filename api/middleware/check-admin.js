@@ -1,4 +1,4 @@
 const checkAdmin = async (req, res, next) => {
-  req.headers.auth === "5678" ? next() : res.end();
+  req.headers.authorization === "5678" ? next() : res.end();
 };
 module.exports = checkAdmin;
