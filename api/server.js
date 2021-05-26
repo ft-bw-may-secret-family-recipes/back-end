@@ -19,4 +19,13 @@ server.use("*", (_req, res) => {
   res.status(200).json({ message: "server up" });
 });
 
+// eslint-disable-next-line no-unused-vars
+server.use((err, _req, res, next) => {
+  res.status(err.status || 500).json({
+    message: err.message,
+    stack: err.stack,
+    customMessage: "Something went wrong inside the users router",
+  });
+});
+
 module.exports = server;
