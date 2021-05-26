@@ -5,6 +5,7 @@ const Recipes = require("./recipes-model");
 router.use(checkAdmin);
 
 const Categories = require("./categories-model");
+const { CheckRecipeExists } = require("../middleware/check-recipe-exists");
 //////////RECIPES//////////
 
 router.get("/", checkUserIdExists, (req, res, next) => {
@@ -29,13 +30,18 @@ router.delete("/:recipe_id", (req, res, next) => {
     .catch(next);
 });
 
-router.get("/:recipe_id", checkUserIdExists, (req, res, next) => {
-  Recipes.getFull(req.headers.user_id, req.params.recipe_id)
-    .then((recipe) => {
-      res.status(200).json(recipe);
-    })
-    .catch(next);
-});
+router.get(
+  "/:recipe_id",
+  checkUserIdExists,
+  CheckRecipeExists,
+  (req, res, next) => {
+    Recipes.getFull(req.recipe)
+      .then((recipe) => {
+        res.status(200).json(recipe);
+      })
+      .catch(next);
+  }
+);
 
 router.post("/", checkUserIdExists, (req, res, next) => {
   Recipes.add(req.headers.user_id, req.body)

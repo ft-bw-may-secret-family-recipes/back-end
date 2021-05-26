@@ -159,17 +159,15 @@ const add = async (
 
 //\\\\\\\\\\\\\\\\\\\ getFull() \\\\\\\\\\\\\\\\\\\\\
 
-const getFull = async (user_id, recipe_id) => {
-  const [rawRecipe] = await getBy(user_id, { recipe_id: recipe_id });
-
+const getFull = async (rawRecipe) => {
   const { category_id: category_id, ...recipe } = rawRecipe;
 
-  const [category] = await getCategory(user_id, {
+  const [category] = await getCategory(rawRecipe.user_id, {
     category_id: category_id,
   });
   delete category.user_id;
 
-  const steps = await getSteps(recipe_id);
+  const steps = await getSteps(rawRecipe.recipe_id);
 
   await Promise.all(
     steps.map(async (step) => {
