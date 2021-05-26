@@ -2,7 +2,7 @@ const {
   DATABASE_URL,
   DEV_DATABASE_URL,
   TESTING_DATABASE_URL,
-} = require("./env-fallbacks");
+} = require("./utils/env-fallbacks");
 
 const pg = require("pg");
 
