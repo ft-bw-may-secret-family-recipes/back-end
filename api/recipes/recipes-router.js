@@ -44,7 +44,7 @@ router.get("/", checkUserIdExists, (req, res, next) => {
 //     .catch(next);
 // });
 
-router.get(":recipe_id", checkUserIdExists, (req, res, next) => {
+router.get("/:recipe_id", checkUserIdExists, (req, res, next) => {
   Recipes.getFull(req.headers.user_id, req.params.recipe_id)
     .then((recipe) => {
       res.status(200).json(recipe);
