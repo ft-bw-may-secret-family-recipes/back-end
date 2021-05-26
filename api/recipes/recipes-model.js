@@ -206,7 +206,7 @@ const shape = {
   recipe_steps: [
     {
       step_description: "heat water in pot",
-      step_number: 1, //todo
+      step_number: 1,
       step_ingredients: [
         {
           quantity: 8,

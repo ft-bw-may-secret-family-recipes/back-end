@@ -1,60 +1,185 @@
-# Build Week Scaffolding for Node and PostgreSQL
+## Authorization
 
-## Video Tutorial
+### Register an Account
 
-The following tutorial explains how to set up this project using PostgreSQL and Heroku.
+~~ ~~POST /api/auth/register~~
 
-[![Setting up PostgreSQL for Build Week](https://img.youtube.com/vi/kTO_tf4L23I/maxresdefault.jpg)](https://www.youtube.com/watch?v=kTO_tf4L23I)
+Body:
+| Parameter | Type | Notes |
+| :-- | :-- | :-- |
+| username | string | (required) |
+| password | string | (required) |
+| email | string | (required) |
 
-## Requirements
+Response:
 
-- [PostgreSQL, pgAdmin 4](https://www.postgresql.org/download/) and [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) installed in your local machine.
-- A Heroku app with the [Heroku PostgreSQL Addon](https://devcenter.heroku.com/articles/heroku-postgresql#provisioning-heroku-postgres) added to it.
-- Development and testing databases created with [pgAdmin 4](https://www.pgadmin.org/docs/pgadmin4/4.29/database_dialog.html).
+    { token: <authorization> }
 
-## Starting a New Project
+### Login
 
-- Create a new repository using this template, and clone it to your local.
-- Create a `.env` file and follow the instructions inside `knexfile.js`.
-- Fix the scripts inside `package.json` to use your Heroku app.
+~~ ~~POST /api/auth/login~~
 
-## Scripts
+Body:
+| Parameter | Type | Notes |
+| :-- | :-- | :-- |
+| username | string | (required) |
+| password | string | (required) |
 
-- **start**: Runs the app.
-- **server**: Runs the app with Nodemon.
-- **migrate**: Migrates the local development database to the latest.
-- **rollback**: Rolls back migrations in the local development database.
-- **seed**: Truncates all tables in the local development database, feel free to add more seed files.
-- **test**: Runs tests.
-- **deploy**: Deploys the main branch to Heroku.
+Response:
 
-**The following scripts NEED TO BE EDITED before using: replace `YOUR_HEROKU_APP_NAME_HERE`**
+    { token: <authorization> }
 
-- **migrateh**: Migrates the Heroku database to the latest.
-- **rollbackh**: Rolls back migrations in the Heroku database.
-- **databaseh**: Interact with the Heroku database from the command line using psql.
-- **seedh**: Runs all seeds in the Heroku database.
+## Recipes
 
-## Hot Tips
+### Get all recipes by user
 
-- Figure out the connection to the database and deployment before writing any code.
+    GET /api/recipes
 
-- If you need to make changes to a migration file that has already been released to Heroku, follow this sequence:
+~~(auth)~~
 
-  1. Roll back migrations in the Heroku database
-  2. Deploy the latest code to Heroku
-  3. Migrate the Heroku database to the latest
+    Headers authorization: 5678, user_id: (integer)
 
-- If your frontend devs are clear on the shape of the data they need, you can quickly build provisional endpoints that return mock data. They shouldn't have to wait for you to build the entire backend.
+Response:
 
-- Keep your endpoints super lean: the bulk of the code belongs inside models and other middlewares.
+     [
+    {
+        "recipe_id": 1,
+        "recipe_name": "Broccoli Pesto Pasta",
+        "recipe_source": "myself",
+        "user_id": 1,
+        "category_id": 1
+    },
+    {
+        "recipe_id": 4,
+        "recipe_name": "boiled water",
+        "recipe_source": "me",
+        "user_id": 1,
+        "category_id": 5
+    },
+       ...
+     ]
 
-- Validating and sanitizing client data using a library is much less work than doing it manually.
+### Get full recipe
 
-- Revealing crash messages to clients is a security risk, but during development it's helpful if your frontend devs are able to tell you what crashed.
+    GET /api/recipes/:recipe_id
 
-- PostgreSQL comes with [fantastic built-in functions](https://hashrocket.com/blog/posts/faster-json-generation-with-postgresql) for hammering rows into whatever JSON shape.
+~~(auth)~~
 
-- If you want to edit a migration that has already been released but don't want to lose all the data, make a new migration instead. This is a more realistic flow for production apps: prod databases are never migrated down. We can migrate Heroku down freely only because there's no valuable data from customers in it. In this sense, Heroku is acting more like a staging environment than production.
+    Headers authorization: 5678, user_id: (integer)
 
-- If your fronted devs are interested in running the API locally, help them set up PostgreSQL & pgAdmin in their machines, and teach them how to run migrations in their local. This empowers them to (1) help you troubleshoot bugs, (2) obtain the latest code by simply doing `git pull` and (3) work with their own data, without it being wiped every time you roll back the Heroku db. Collaboration is more fun and direct, and you don't need to deploy as often.
+Response:
+
+    {
+    "recipe": {
+        "recipe_id": 1,
+        "recipe_name": "Broccoli Pesto Pasta",
+        "recipe_source": "myself",
+        "user_id": 1
+    },
+    "category": {
+        "category_id": 1,
+        "category": "pasta"
+    },
+    "steps": [
+        {
+            "step_id": 1,
+            "step_description": "Heat pan",
+            "step_number": 1,
+            "step_ingredients": []
+        },
+        {
+            "step_id": 2,
+            "step_description": "Add Broccoli",
+            "step_number": 2,
+            "step_ingredients": [
+                {
+                    "step_ingredient_id": 1,
+                    "quantity": 1,
+                    "ingredient": {
+                        "ingredient_id": 1,
+                        "ingredient_name": "Broccoli",
+                        "ingredient_unit": "lbs"
+                    }
+                }
+            ]
+        },
+        {
+            "step_id": 3,
+            "step_description": "Add pesto mixed with pasta",
+            "step_number": 3,
+            "step_ingredients": [
+                {
+                    "step_ingredient_id": 2,
+                    "quantity": 1.5,
+                    "ingredient": {
+                        "ingredient_id": 2,
+                        "ingredient_name": "Pesto",
+                        "ingredient_unit": "lbs"
+                    }
+                },
+                {
+                    "step_ingredient_id": 3,
+                    "quantity": 2,
+                    "ingredient": {
+                        "ingredient_id": 3,
+                        "ingredient_name": "Pasta",
+                        "ingredient_unit": "lbs"
+                    }
+                }
+            ]
+        }
+      ]
+    }
+
+### Post a recipe
+
+    POST /api/items
+
+~~(auth)~~
+
+    Headers authorization: 5678, user_id: (integer)
+
+| Parameter        | Type   | Notes                                 |
+| :--------------- | :----- | :------------------------------------ |
+| recipe_name      | string | (required)                            |
+| recipe_source    | string | (required)                            |
+| category         | string | (required)                            |
+| recipe_steps     | array  | of objects, defined below, (required) |
+| step_description | string | (required)                            |
+| step_number      | number | (required)                            |
+| step_ingredients | array  | of objects, defined below             |
+| quantity         | number | (required)                            |
+| ingredient       | object | defined below, (required)             |
+| ingredient_name  | string | (required)                            |
+| ingredient_unit  | string | (required if ingredient is new)       |
+
+Response: The created item
+
+    {
+        "recipe_id": 4,
+        "recipe_name": "boiled water",
+        "recipe_source": "me",
+        "user_id": 1,
+        "category": {
+            "category_id": 4,
+            "category": "soups"
+        },
+        "steps": [
+            {
+                "step_id": 9,
+                "step_description": "heat water in pot",
+                "step_number": 1,
+                "step_ingredients": [
+                    {
+                        "step_ingredient_id": 7,
+                        "quantity": 8,
+                        "ingredient": {
+                            "ingredient_id": 7,
+                            "ingredient_name": "water",
+                            "ingredient_unit": "oz"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
