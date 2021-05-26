@@ -44,25 +44,20 @@ exports.recipe = yup.object({
             .required("quantity required")
             .positive("quantity must be positive"),
 
-          ingredient: yup.array.of(
-            yup.object({
-              ingredient_name: yup
-                .string()
-                .trim()
-                .required("ingredient name required")
-                .min(2, "ingredient name must be at least 2 characters long")
-                .max(
-                  100,
-                  "ingredient name must be at most 100 characters long"
-                ),
-              ingredient_unit: yup
-                .string()
-                .trim()
-                .required("ingredient unit required")
-                .min(2, "ingredient unit must be at least 2 characters long")
-                .max(100, "ingredient unit must be at most 50 characters long"),
-            })
-          ),
+          ingredient: yup.object({
+            ingredient_name: yup
+              .string()
+              .trim()
+              .required("ingredient name required")
+              .min(2, "ingredient name must be at least 2 characters long")
+              .max(100, "ingredient name must be at most 100 characters long"),
+            ingredient_unit: yup
+              .string()
+              .trim()
+              .required("ingredient unit required")
+              .min(2, "ingredient unit must be at least 2 characters long")
+              .max(100, "ingredient unit must be at most 50 characters long"),
+          }),
         })
       ),
     })
