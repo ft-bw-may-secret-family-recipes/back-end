@@ -51,14 +51,22 @@ Response:
         "recipe_name": "Broccoli Pesto Pasta",
         "recipe_source": "myself",
         "user_id": 1,
-        "category_id": 1
+        "category": {
+            "category_id": 1,
+            "category": "pasta",
+            "user_id": 1
+        }
     },
     {
         "recipe_id": 4,
         "recipe_name": "boiled water",
         "recipe_source": "me",
         "user_id": 1,
-        "category_id": 5
+        "category": {
+            "category_id": 4,
+            "category": "soups",
+            "user_id": 1
+        }
     },
        ...
      ]
