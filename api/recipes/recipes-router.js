@@ -4,7 +4,6 @@ const Recipes = require("./recipes-model");
 
 router.use(checkAdmin);
 
-const Ingredients = require("./ingredients-model");
 const Categories = require("./categories-model");
 //////////RECIPES//////////
 
@@ -68,24 +67,6 @@ router.post("/", checkUserIdExists, (req, res, next) => {
     .catch(next);
 });
 
-//////////INGREDIENTS//////////
-router.get("/ingredients", (req, res, next) => {
-  Ingredients.getAll()
-    .then((ingredients) => {
-      res.json(ingredients);
-    })
-    .catch(next);
-});
-
-router.get("/ingredients/:ingredient_id", (req, res, next) => {
-  const { ingredient_id } = req.params;
-
-  Ingredients.getByIngredientId(ingredient_id)
-    .then((ingredients) => {
-      res.json(ingredients);
-    })
-    .catch(next);
-});
 //////////CATEGORIES//////////
 // router.get("/categories", (req, res, next) => {
 //   Categories.getAll()

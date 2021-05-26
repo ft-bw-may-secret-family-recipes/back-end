@@ -2,7 +2,9 @@ const db = require("../data/db-config");
 const { getBy: getCategory } = require("./categories-model");
 const { getByRecipeId: getSteps } = require("./steps-model");
 const { getByStepId: getStepIngredients } = require("./step-ingredients-model");
-const { getByIngredientId: getIngredient } = require("./ingredients-model");
+const {
+  getByIngredientId: getIngredient,
+} = require("../ingredients/ingredients-model");
 
 const getAll = () => db("recipes"); //admin only
 
