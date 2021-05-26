@@ -1,15 +1,16 @@
 const db = require("../data/db-config");
 const { getBy: getCategory } = require("./categories-model");
+const { getByRecipeId: getSteps } = require("./steps-model");
+const { getByStepId: getStepIngredients } = require("./step-ingredients-model");
+const { getByIngredientId: getIngredient } = require("./ingredients-model");
 
 const getAll = () => db("recipes"); //admin only
 
-const getBy = async (user_id, recipeProp) => {
-  const results = await db("recipes").where({
+const getBy = (user_id, recipeProp) =>
+  db("recipes").where({
     user_id: user_id,
     ...recipeProp,
   });
-  results.length === 1 ? results[0] : results;
-};
 
 const getByUserId = (id) => db("recipes").where("user_id", id);
 
@@ -32,10 +33,10 @@ const add = async (
   //\\\\\\\\\\\\\\\\\\\ Start Transaction \\\\\\\\\\\\\\\\\\\\\
 
   const newRecipe = await db.transaction(async (trx) => {
-    let categoryObj = await getCategory(user_id, { category: category });
+    let [categoryObj] = await getCategory(user_id, { category: category });
     if (!categoryObj) {
       [categoryObj] = await db("categories")
-        .insert({ category: category, user_id: 1 })
+        .insert({ category: category, user_id })
         .returning("*");
     }
 
@@ -64,7 +65,11 @@ const add = async (
     );
 
     const rawSteps = recipe_steps.map((step) => {
-      return { step_description: step.step_description, recipe_id: recipe_id };
+      return {
+        step_description: step.step_description,
+        step_number: step.step_number,
+        recipe_id: recipe_id,
+      };
     });
     const newSteps = await trx("steps").insert(rawSteps).returning("*");
 
@@ -127,7 +132,7 @@ const add = async (
   });
 
   const shapedSteps = steps.map((step) => {
-    const stepIngredients = shapedStepIngredients.reduce(
+    const step_ingredients = shapedStepIngredients.reduce(
       (list, stepIgdt, idx, shapedStepIgdts) => {
         if (stepIgdt.step_id === step.step_id) {
           const [newIgdt] = shapedStepIgdts.splice(idx, 1);
@@ -142,37 +147,62 @@ const add = async (
     );
     delete step.recipe_id;
 
-    return { ...step, stepIngredients };
+    return { ...step, step_ingredients };
   });
 
-  const fullRecipe = { ...shapedRecipe, shapedSteps };
+  let fullRecipe = { ...shapedRecipe, steps: [...shapedSteps] };
 
   return fullRecipe;
+};
+
+//\\\\\\\\\\\\\\\\\\\ getFull() \\\\\\\\\\\\\\\\\\\\\
+
+const getFull = async (user_id, recipe_id) => {
+  const [rawRecipe] = await getBy(user_id, { recipe_id: recipe_id });
+
+  const { category_id: category_id, ...recipe } = rawRecipe;
+
+  const [category] = await getCategory(user_id, {
+    category_id: category_id,
+  });
+  delete category.user_id;
+
+  const steps = await getSteps(recipe_id);
+
+  await Promise.all(
+    steps.map(async (step) => {
+      delete step.recipe_id;
+
+      step.step_ingredients = await getStepIngredients(step.step_id);
+
+      const stepIngredients = step.step_ingredients;
+
+      if (stepIngredients.length === 0) {
+        return step;
+      }
+      await Promise.all(
+        stepIngredients.map(async (stepIgdt) => {
+          delete stepIgdt.step_id;
+
+          const ingredient = await getIngredient(stepIgdt.ingredient_id);
+          stepIgdt.ingredient = ingredient;
+
+          delete stepIgdt.ingredient_id;
+          return stepIgdt;
+        })
+      );
+
+      return step;
+    })
+  );
+
+  return { recipe, category, steps };
 };
 
 module.exports = {
   getAll,
   getBy,
+  getFull,
   getByUserId,
   add,
-};
-
-const shape = {
-  recipe_name: "boiled water",
-  recipe_source: "me",
-  category: "soups",
-  recipe_steps: [
-    {
-      step_description: "heat water in pot",
-      step_ingredients: [
-        {
-          quantity: 8,
-          ingredient: {
-            ingredient_name: "water",
-            ingredient_unit: "oz",
-          },
-        },
-      ],
-    },
-  ],
 };
