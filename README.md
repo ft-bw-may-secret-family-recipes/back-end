@@ -104,7 +104,8 @@ Response:
                         "ingredient_name": "Broccoli",
                         "ingredient_unit": "lbs"
                     }
-                }
+                },
+                ...
             ]
         },
         {
@@ -129,9 +130,11 @@ Response:
                         "ingredient_name": "Pasta",
                         "ingredient_unit": "lbs"
                     }
-                }
+                },
+                ...
             ]
-        }
+        },
+        ...
       ]
     }
 
@@ -182,8 +185,34 @@ Response: The created item
                             "ingredient_name": "water",
                             "ingredient_unit": "oz"
                         }
-                    }
+                    },
+                    ...
                 ]
-            }
+            },
+            ...
         ]
     }
+
+### Get ingredients
+
+    GET /api/ingredients
+
+~~(auth)~~
+
+    Headers authorization: 5678
+
+Response
+
+    [
+        {
+            "ingredient_id": 1,
+            "ingredient_name": "Broccoli",
+            "ingredient_unit": "lbs"
+        },
+        {
+            "ingredient_id": 2,
+            "ingredient_name": "Pesto",
+            "ingredient_unit": "lbs"
+        },
+        ...
+    ]
