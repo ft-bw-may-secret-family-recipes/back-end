@@ -1,3 +1,7 @@
+## Base URL
+
+### https://ft-bw-may-secret-family-recipe.herokuapp.com/
+
 ## Authorization
 
 ### Register an Account
@@ -7,9 +11,9 @@
 Body:
 | Parameter | Type | Notes |
 | :-- | :-- | :-- |
-| username | string | (required) |
-| password | string | (required) |
-| email | string | (required) |
+| user_username | string | (required) |
+| user_password | string | (required) |
+| user_email | string | (required) |
 
 Response:
 
@@ -22,8 +26,8 @@ Response:
 Body:
 | Parameter | Type | Notes |
 | :-- | :-- | :-- |
-| username | string | (required) |
-| password | string | (required) |
+| user_username | string | (required) |
+| user_password | string | (required) |
 
 Response:
 
