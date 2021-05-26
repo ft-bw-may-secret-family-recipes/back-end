@@ -36,7 +36,7 @@ const add = async (
     let [categoryObj] = await getCategory(user_id, { category: category });
     if (!categoryObj) {
       [categoryObj] = await db("categories")
-        .insert({ category: category, user_id: 1 })
+        .insert({ category: category, user_id })
         .returning("*");
     }
 
