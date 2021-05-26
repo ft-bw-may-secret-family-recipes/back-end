@@ -4,8 +4,7 @@ exports.CheckRecipeExists = (req, res, next) => {
   const recipe_id = req.params.recipe_id;
   getRecipe(req.headers.user_id, { recipe_id: recipe_id })
     .then(([recipe]) => {
-      if (recipe?.active) {
-        delete recipe.active;
+      if (recipe) {
         req.recipe = recipe;
         next();
       } else {
