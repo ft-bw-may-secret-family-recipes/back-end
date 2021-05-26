@@ -31,8 +31,8 @@ exports.up = async (knex) => {
         .notNullable()
         .references("user_id")
         .inTable("users")
-        .onUpdate("RESTRICT")
-        .onDelete("RESTRICT");
+        .onUpdate("CASCADE")
+        .onDelete("CASCADE");
         table
         .integer("category_id")
         .unsigned()
@@ -52,8 +52,8 @@ exports.up = async (knex) => {
         .notNullable()
         .references("recipe_id")
         .inTable("recipes")
-        .onUpdate("RESTRICT")
-        .onDelete("RESTRICT");
+        .onUpdate("CASCADE")
+        .onDelete("CASCADE");
     })
 
     .createTable('ingredients', (table) => {
@@ -70,7 +70,7 @@ exports.up = async (knex) => {
         .notNullable()
         .references('step_id')
         .inTable('steps')
-        .onDelete('RESTRICT')
+        .onDelete('CASCADE')
         .onUpdate('CASCADE')
       table.integer('ingredient_id')
         .unsigned()

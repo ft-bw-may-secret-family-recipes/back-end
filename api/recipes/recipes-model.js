@@ -124,6 +124,7 @@ const add = async (
 
   const shapedRecipe = { ...recipe, category: categoryObj };
   delete shapedRecipe.category_id;
+  delete shapedRecipe.active;
 
   const shapedStepIngredients = stepIngredients.map((stepIgdt) => {
     const ingredient = ingredients.find(
@@ -159,17 +160,15 @@ const add = async (
 
 //\\\\\\\\\\\\\\\\\\\ getFull() \\\\\\\\\\\\\\\\\\\\\
 
-const getFull = async (user_id, recipe_id) => {
-  const [rawRecipe] = await getBy(user_id, { recipe_id: recipe_id });
-
+const getFull = async (rawRecipe) => {
   const { category_id: category_id, ...recipe } = rawRecipe;
 
-  const [category] = await getCategory(user_id, {
+  const [category] = await getCategory(rawRecipe.user_id, {
     category_id: category_id,
   });
   delete category.user_id;
 
-  const steps = await getSteps(recipe_id);
+  const steps = await getSteps(rawRecipe.recipe_id);
 
   await Promise.all(
     steps.map(async (step) => {
@@ -201,10 +200,24 @@ const getFull = async (user_id, recipe_id) => {
   return { recipe, category, steps };
 };
 
+//\\\\\\\\\\\\\\\\\\\ remove() \\\\\\\\\\\\\\\\\\\\\
+
+const remove = async (user_id, recipe_id) => {
+  await db("recipes")
+    .where({
+      user_id: user_id,
+      recipe_id: recipe_id,
+    })
+    .update({ active: false });
+
+  return `Recipe ${recipe_id} deleted`;
+};
+
 module.exports = {
   getAll,
   getBy,
   getFull,
   getByUserId,
   add,
+  remove,
 };
