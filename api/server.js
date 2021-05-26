@@ -10,10 +10,12 @@ server.use(cors());
 const authRouter = require("./auth/auth-router");
 const usersRouter = require("./users/users-router");
 const recipesRouter = require("./recipes/recipes-router");
+const ingredientsRouter = require("./ingredients/ingredients-router");
 
 server.use("/api/auth", authRouter);
 server.use("/api/users", usersRouter);
 server.use("/api/recipes", recipesRouter);
+server.use("/api/ingredients", ingredientsRouter);
 
 server.use("*", (_req, res) => {
   res.status(200).json({ message: "server up" });
