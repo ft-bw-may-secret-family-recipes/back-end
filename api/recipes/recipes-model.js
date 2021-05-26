@@ -169,7 +169,7 @@ const getFull = async (user_id, recipe_id) => {
 
   const steps = await getSteps(recipe_id);
 
-  const stepIngredients = await Promise.all(
+  await Promise.all(
     steps.map(async (step) => {
       delete step.recipe_id;
 
@@ -177,14 +177,14 @@ const getFull = async (user_id, recipe_id) => {
 
       const stepIngredients = step.step_ingredients;
 
-      if (!stepIngredients.length === 0) {
+      if (stepIngredients.length === 0) {
         return step;
       }
       await Promise.all(
         stepIngredients.map(async (stepIgdt) => {
           delete stepIgdt.step_id;
 
-          const [ingredient] = await getIngredient(stepIgdt.ingredient_id);
+          const ingredient = await getIngredient(stepIgdt.ingredient_id);
           stepIgdt.ingredient = ingredient;
 
           delete stepIgdt.ingredient_id;
