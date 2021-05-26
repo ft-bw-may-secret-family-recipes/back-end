@@ -1,6 +1,6 @@
 exports.up = async (knex) => {
   await knex.schema.table("steps", (table) => {
-    table.integer("step_number").unsigned(); //.notNullable();
+    table.integer("step_number").unsigned().notNullable();
   });
 };
 
