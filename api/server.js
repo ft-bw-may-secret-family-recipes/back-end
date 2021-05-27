@@ -26,7 +26,7 @@ server.use((err, _req, res, _next) => {
   res.status(err.status || 500).json({
     message: err.message,
     stack: err.stack,
-    customMessage: "Something went wrong inside the users router",
+    backend: "Problems with the server? Post the details on Slack",
   });
 });
 

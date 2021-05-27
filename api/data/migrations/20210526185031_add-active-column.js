@@ -1,6 +1,6 @@
 exports.up = async (knex) => {
   await knex.schema.table("recipes", (table) => {
-    table.boolean("active").defaultTo(true);
+    table.boolean("active").notNullable().defaultTo(true);
   });
 };
 
