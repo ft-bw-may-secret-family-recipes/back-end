@@ -44,6 +44,19 @@ router.post("/", validateRecipe, (req, res, next) => {
     .catch(next);
 });
 
+router.put(
+  "/:recipe_id",
+  validateRecipe,
+  CheckRecipeExists,
+  (req, res, next) => {
+    Recipes.edit(req.decodedJwt.sub, req.recipe, req.body)
+      .then((updatedRecipe) => {
+        res.status(201).json(updatedRecipe);
+      })
+      .catch(next);
+  }
+);
+
 //////////CATEGORIES//////////
 // router.get("/categories", (req, res, next) => {
 //   Categories.getAll()
