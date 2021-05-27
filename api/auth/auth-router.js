@@ -25,7 +25,7 @@ router.post(
     user.user_password = hash;
 
     Users.add(user)
-      .then(([newUser]) => {
+      .then((newUser) => {
         const token = buildToken(newUser);
         res.status(201).json(token);
       })
