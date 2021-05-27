@@ -252,15 +252,18 @@ const getFull = async (rawRecipe) => {
 
 //\\\\\\\\\\\\\\\\\\\ remove() \\\\\\\\\\\\\\\\\\\\\
 
-const remove = async (user_id, recipe_id) => {
+const remove = async (user_id, recipe_id, recipe_name) => {
   await db("recipes")
     .where({
       user_id: user_id,
       recipe_id: recipe_id,
     })
-    .update({ active: false });
+    .update({
+      active: false,
+      recipe_name: `DEACTIVATED${new Date().toISOString()}${recipe_name}`,
+    });
 
-  return `Recipe ${recipe_id} deleted`;
+  return `Recipe ${recipe_id} removed`;
 };
 
 module.exports = {
