@@ -28,7 +28,7 @@ router.delete(
   CheckRecipeExists,
   (req, res, next) => {
     const user_id = req.headers.user_id;
-    Recipes.remove(user_id, req.params.recipe_id)
+    Recipes.remove(user_id, req.params.recipe_id, req.recipe.recipe_name)
       .then((result) => {
         res.status(200).json(result);
       })
