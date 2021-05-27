@@ -1,11 +1,11 @@
 const router = require("express").Router();
-const { checkUserIdExists, restrict } = require("../middleware");
+const { restrict } = require("../middleware");
 const { validateRecipe } = require("../middleware/validation");
 const Recipes = require("./recipes-model");
 
 router.use(restrict);
 
-const Categories = require("./categories-model");
+// const Categories = require("./categories-model");
 const { CheckRecipeExists } = require("../middleware/check-recipe-exists");
 //////////RECIPES//////////
 
