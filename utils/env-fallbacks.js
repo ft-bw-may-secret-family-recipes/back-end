@@ -9,3 +9,5 @@ exports.TESTING_DATABASE_URL = process.env.TESTING_DATABASE_URL;
 
 exports.BCRYPT_ROUNDS = parseInt(process.env.BCRYPT_ROUNDS) || 8;
 exports.JWT_SECRET = process.env.JWT_SECRET || "SET your .env variables";
+
+exports.SEED_PASSWORD = process.env.SEED_PASSWORD;
