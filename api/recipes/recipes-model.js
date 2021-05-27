@@ -20,7 +20,11 @@ const getBy = (user_id, recipeProp) =>
     .from("recipes")
     .where({
       user_id: user_id,
+<<<<<<< HEAD
       active: true,
+=======
+       active: true,
+>>>>>>> 1a9be1580cc6e5a7dd33eaab73be655a18378827
       ...recipeProp,
     });
 
