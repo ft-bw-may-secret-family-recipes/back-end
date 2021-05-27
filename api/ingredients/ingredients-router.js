@@ -1,8 +1,8 @@
 const router = require("express").Router();
-const checkAdmin = require("../middleware/check-admin");
+const { restrict } = require("../middleware/index");
 const Ingredients = require("./ingredients-model");
 
-router.use(checkAdmin);
+router.use(restrict);
 
 router.get("/", (req, res, next) => {
   Ingredients.getAll()

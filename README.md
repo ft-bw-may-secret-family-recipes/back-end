@@ -6,7 +6,7 @@
 
 ### Register an Account
 
-~~ ~~POST /api/auth/register~~
+POST /api/auth/register
 
 Body:
 | Parameter | Type | Notes |
@@ -21,7 +21,7 @@ Response:
 
 ### Login
 
-~~ ~~POST /api/auth/login~~
+POST /api/auth/login
 
 Body:
 | Parameter | Type | Notes |
@@ -39,9 +39,9 @@ Response:
 
     GET /api/recipes
 
-~~(auth)~~
 
-    Headers authorization: 5678, user_id: (integer)
+
+    HEADERS authorization: token
 
 Response:
 
@@ -75,9 +75,9 @@ Response:
 
     GET /api/recipes/:recipe_id
 
-~~(auth)~~
 
-    Headers authorization: 5678, user_id: (integer)
+
+    HEADERS authorization: token
 
 Response:
 
@@ -150,9 +150,8 @@ Response:
 
     POST /api/recipes
 
-~~(auth)~~
 
-    Headers authorization: 5678, user_id: (integer)
+    HEADERS authorization: token
 
 | Parameter        | Type   | Notes                                 |
 | :--------------- | :----- | :------------------------------------ |
@@ -205,9 +204,8 @@ Response: The created recipe
 
     GET /api/ingredients
 
-~~(auth)~~
 
-    Headers authorization: 5678
+    HEADERS authorization: token
 
 Response
 
