@@ -1,9 +1,10 @@
 const jwt = require("jsonwebtoken");
-const { JWT_SECRET } = require("../../utils/env-fallbacks");
+const { JWT_SECRET } = require("./env-fallbacks");
 
 exports.buildToken = (user) => {
   const payload = {
     sub: user.user_id,
+    name: user.user_username,
   };
 
   const options = {
