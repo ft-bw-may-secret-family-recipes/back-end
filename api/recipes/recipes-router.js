@@ -6,7 +6,7 @@ const Recipes = require("./recipes-model");
 router.use(restrict);
 
 // const Categories = require("./categories-model");
-const { CheckRecipeExists } = require("../middleware/check-recipe-exists");
+const { checkRecipeExists } = require("../middleware/check-recipe-exists");
 //////////RECIPES//////////
 
 router.get("/", (req, res, next) => {
@@ -19,7 +19,7 @@ router.get("/", (req, res, next) => {
     .catch(next);
 });
 
-router.delete("/:recipe_id", CheckRecipeExists, (req, res, next) => {
+router.delete("/:recipe_id", checkRecipeExists, (req, res, next) => {
   const user_id = req.decodedJwt.sub;
   Recipes.remove(user_id, req.params.recipe_id, req.recipe.recipe_name)
     .then((result) => {
@@ -28,7 +28,7 @@ router.delete("/:recipe_id", CheckRecipeExists, (req, res, next) => {
     .catch(next);
 });
 
-router.get("/:recipe_id", CheckRecipeExists, (req, res, next) => {
+router.get("/:recipe_id", checkRecipeExists, (req, res, next) => {
   Recipes.getFull(req.recipe)
     .then((recipe) => {
       res.status(200).json(recipe);
@@ -47,7 +47,7 @@ router.post("/", validateRecipe, (req, res, next) => {
 router.put(
   "/:recipe_id",
   validateRecipe,
-  CheckRecipeExists,
+  checkRecipeExists,
   (req, res, next) => {
     Recipes.edit(req.decodedJwt.sub, req.recipe, req.body)
       .then((updatedRecipe) => {
