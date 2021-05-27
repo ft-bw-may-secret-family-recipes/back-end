@@ -63,3 +63,39 @@ exports.recipe = yup.object({
     })
   ),
 });
+
+exports.registration = yup.object({
+  user_username: yup
+    .string()
+    .trim()
+    .required("username required")
+    .min(2, "username must be at least 2 characters long")
+    .max(140, "username must be at most 140 characters long"),
+
+  user_password: yup
+    .string()
+    .required("password required")
+    .min(8, "password must be at least 8 characters long")
+    .max(140, "password must be at most 140 characters long"),
+
+  user_email: yup
+    .string()
+    .required("email required")
+    .email("email must be a valid email")
+    .max(280, "email must be at most 280 characters long"),
+});
+
+exports.login = yup.object({
+  user_username: yup
+    .string()
+    .trim()
+    .required("username required")
+    .min(2, "invalid credentials")
+    .max(140, "invalid credentials"),
+
+  user_password: yup
+    .string()
+    .required("password required")
+    .min(8, "invalid credentials")
+    .max(140, "invalid credentials"),
+});

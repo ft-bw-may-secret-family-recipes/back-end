@@ -7,7 +7,7 @@ exports.buildToken = (user) => {
   };
 
   const options = {
-    expires: "1d",
+    expiresIn: "1d",
   };
 
   return jwt.sign(payload, JWT_SECRET, options);

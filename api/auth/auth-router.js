@@ -3,8 +3,12 @@ const Users = require("../users/users-model");
 const {
   checkUsernameAvailable: checkAvailable,
   checkUsernameExists: checkExists,
-  // validateRegistration, validateUser
 } = require("../middleware/index");
+
+const {
+  validateRegistration,
+  validateUser,
+} = require("../middleware/validation");
 
 const bcrypt = require("bcrypt");
 const { BCRYPT_ROUNDS } = require("../../utils/env-fallbacks");
@@ -12,7 +16,7 @@ const { buildToken } = require("../middleware/build-token");
 
 router.post(
   "/register",
-  // validateRegistration,
+  validateRegistration,
   checkAvailable,
   (req, res, next) => {
     let user = req.body;
@@ -22,30 +26,24 @@ router.post(
 
     Users.add(user)
       .then((newUser) => {
-        res.status(201).json(newUser);
+        const token = buildToken(newUser);
+        res.status(201).json(token);
       })
       .catch(next);
   }
 );
 
-router.post(
-  "/login",
-  // validateUser,
-  checkExists,
-  (req, res, next) => {
-    let { user_password } = req.body;
+router.post("/login", validateUser, checkExists, (req, res, next) => {
+  let { user_password } = req.body;
 
-    const { user_password: hash } = req.foundUser;
+  const { user_password: hash } = req.foundUser;
 
-    if (bcrypt.compareSync(user_password, hash)) {
-      const token = buildToken(req.foundUser);
-      res.status(200).json(token);
-    } else {
-      next({ status: 401, message: "invalid credentials" });
-    }
-
-    Users();
+  if (bcrypt.compareSync(user_password, hash)) {
+    const token = buildToken(req.body);
+    res.status(200).json(token);
+  } else {
+    next({ status: 401, message: "invalid credentials" });
   }
-);
+});
 
 module.exports = router;
