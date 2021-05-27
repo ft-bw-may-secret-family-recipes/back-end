@@ -263,7 +263,7 @@ const remove = async (user_id, recipe_id, recipe_name) => {
       recipe_name: `DEACTIVATED${new Date().toISOString()}${recipe_name}`,
     });
 
-  return `Recipe ${recipe_id} deleted`;
+  return `Recipe ${recipe_id} removed`;
 };
 
 module.exports = {
