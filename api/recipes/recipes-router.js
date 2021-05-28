@@ -41,7 +41,13 @@ router.post("/", validateRecipe, (req, res, next) => {
     .then((recipe) => {
       res.status(201).json(recipe);
     })
-    .catch(next);
+    .catch((err) =>
+      err.message.includes(
+        'duplicate key value violates unique constraint "recipes_recipe_name_unique"'
+      )
+        ? next({ status: 400, message: "recipe name unavailable" })
+        : next(err)
+    );
 });
 
 router.put(
