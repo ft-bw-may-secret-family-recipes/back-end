@@ -5,7 +5,6 @@ const Recipes = require("./recipes-model");
 
 router.use(restrict);
 
-// const Categories = require("./categories-model");
 const { checkRecipeExists } = require("../middleware/check-recipe-exists");
 //////////RECIPES//////////
 
@@ -62,32 +61,5 @@ router.put(
       .catch(next);
   }
 );
-
-//////////CATEGORIES//////////
-// router.get("/categories", (req, res, next) => {
-//   Categories.getAll()
-//     .then((categories) => {
-//       res.json(categories);
-//     })
-//     .catch(next);
-// });
-
-// router.get("/categories/:user_id", (req, res, next) => {
-//   const { user_id } = req.params;
-
-//   Categories.getByUserId(user_id)
-//     .then((categories) => {
-//       res.json(categories);
-//     })
-//     .catch(next);
-// });
-
-// router.get("/categories/", (req, res, next) => {
-//   Categories.getByUserId(req.decodedJwt.sub)
-//     .then((categories) => {
-//       res.json(categories);
-//     })
-//     .catch(next);
-// });
 
 module.exports = router;
